@@ -1,0 +1,139 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-direct-sso-auth/^2.0.0/components/context.jsonld"
+  ],
+  "import": [
+    "cdsa:config/github-secret.json"
+  ],
+  "@graph": [
+
+  		{ "comment": "RESOLVER" },
+
+			{
+      "@id": "urn:cdsa:core:CallbackRoute:Github",
+      "@type": "RelativePathInteractionRoute",
+      "base": {
+        "@type": "AbsolutePathInteractionRoute",
+        "path": {
+          "@id": "urn:solid-server:default:variable:baseUrl"
+        }
+      },
+      "comment" : [
+      	"if you set 'http://example.org/callback/' in github settings",
+      	"just put 'callback/' , and it will be appended to baseUrl.",
+        "careful with trailling slash ! they should match"
+      ],
+      "relativePath": ".auth/github/callback"
+    },
+    {
+      "@id": "urn:cdsa:core:CookieName:Github",
+      "comment": "give a *unique* string for this client",
+      "valueRaw": "github-auth-cookie"
+    },
+    {
+      "@id": "urn:cdsa:core:IdentityResolver:Github",
+      "@type": "OAuthResolver",
+      "callback_route": {
+        "@id": "urn:cdsa:core:CallbackRoute:Github"
+      },
+      "client_id": {
+        "@id": "urn:cdsa:core:IdentityResolver:Github:clientId"
+      },
+      "client_secret": {
+        "@id": "urn:cdsa:core:IdentityResolver:Github:clientSecret"
+      },
+      "issuer_url": {
+        "valueRaw": "https://github.com/"
+      },
+      "authorization_endpoint": {
+        "valueRaw": "https://github.com/login/oauth/authorize"
+      },
+      "token_endpoint": {
+        "valueRaw": "https://github.com/login/oauth/access_token"
+      }
+    },
+    {
+      "@id": "urn:solid-server:default:EarlyProcessParallelInitializer",
+      "@type": "ParallelHandler",
+      "handlers": [
+        {
+          "@id": "urn:cdsa:core:IdentityResolver:Github"
+        }
+      ]
+    },
+
+		{ "comment": "REDIRECT" },
+
+    {
+      "@id": "urn:cdsa:core:RedirectEndpointRouterHandler:Github",
+      "@type": "RouterHandler",
+      "baseUrl": {
+        "@id": "urn:solid-server:default:variable:baseUrl"
+      },
+      "targetExtractor": {
+        "@id": "urn:solid-server:default:TargetExtractor"
+      },
+      "allowedPathNames": [
+        "/.auth/github/login"
+      ],
+      "handler": {
+        "@id": "urn:cdsa:core:RedirectEndpointHandler:Github",
+        "@type": "RedirectEndpointHttpHandler",
+        "identityResolvers": [
+          {"@id": "urn:cdsa:core:IdentityResolver:Github"}
+        ],
+        "sessionStore":  { "@id": "urn:cdsa:core:SessionStore:Global" },
+        "cookieName": { "@id": "urn:cdsa:core:CookieName:Github"}
+      }
+    },
+    {
+      "@id": "urn:solid-server:default:BaseHttpHandler",
+      "@type": "WaterfallHandler",
+      "handlers": [
+        {
+          "@id": "urn:cdsa:core:RedirectEndpointRouterHandler:Github"
+        }
+      ]
+    },
+
+
+		{ "comment": "CALLBACK" },
+
+    {
+      "@id": "urn:cdsa:core:CallbackRouterHandler:Github",
+      "@type": "RouterHandler",
+      "baseUrl": {
+        "@id": "urn:solid-server:default:variable:baseUrl"
+      },
+      "targetExtractor": {
+        "@id": "urn:solid-server:default:TargetExtractor"
+      },
+      "allowedPathNames": [
+        "/.auth/github/callback"
+      ],
+      "handler": {
+        "@id": "urn:cdsa:core:CallbackHandler:Github",
+        "@type": "CallbackHttpHandler",
+        "ssoOIDC": { "@id": "urn:cdsa:core:IdentityResolver:Github"},
+        "sessionStore": { "@id": "urn:cdsa:core:SessionStore:Global"},
+        "ssoStore": { "@id": "urn:cdsa:core:Store:Global"},
+        "accountStore": { "@id": "urn:solid-server:default:AccountStore"},
+        "providerFactory": { "@id": "urn:solid-server:default:IdentityProviderFactory" },
+        "createPodHandler": { "@id": "urn:solid-server:default:CreatePodHandler"},
+        "webIdStore": { "@id": "urn:solid-server:default:WebIdStore"}, 
+        "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl"},
+        "cookieName": { "@id": "urn:cdsa:core:CookieName:Github"}
+      }
+    },
+    {
+      "@id": "urn:solid-server:default:BaseHttpHandler",
+      "@type": "WaterfallHandler",
+      "handlers": [
+        {
+          "@id": "urn:cdsa:core:CallbackRouterHandler:Github"
+        }
+      ]
+    }
+  ]
+}

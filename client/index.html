@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/solid.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <title>Simple Solid App Demo</title>
+</head>
+
+<body>
+  <main class="container" style="max-width: 600px">
+    <h1>CSS direct SSO auth demo</h1>
+    <!--  Configuration -->
+    <section>
+      <details>
+        <summary>(0. Configuration)</summary>
+        <p>
+          Url of the CSS instance:
+        </p>
+        <input id="cssurl" />
+      </detail>
+    </section>
+
+
+    <!--Login -->
+    <section>
+      <h2>1. Login</h2>
+      <button id="startGithubLogin">Login with github</button>
+      <button id="startGoogleLogin">Login with google</button>
+      <button id="startEmailPasswordLogin">Login with email/password</button>
+      <button id="logout">Logout</button>
+      </p>
+      <p  >
+        <span id="loginStatus" style="background: gray; color: white;" ></span>
+      </p>
+      <p>
+      <details>
+        <summary>redirect url: </summary>
+        <input id="redirect_url" />
+      </details>
+      </p>
+    </section>
+
+    <!--  Fetch Resource -->
+    <section>
+      <h2>2. Fetch a Protected Resource</h2>
+      <p>
+        <label for="resourceInput">Resource to view: ( the default profile folder is a protected resource, see if you
+          can view its content ) </label>
+        <input type="text" id="resourceInput" placeholder="e.g. http://localhost:3000/alice/private/secret" />
+        <button id="fetchResource">Fetch Resource</button>
+      </p>
+      <p id="resourceContent"></p>
+    </section>
+  </main>
+
+  <script type="module" src="/src/solid.js"></script>
+</body>
+
+</html>

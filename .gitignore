@@ -1,0 +1,11 @@
+data
+dist
+node_modules
+
+config/github-secret.json
+config/google-secret.json
+.env
+playwright/tests/browser_state
+client/public
+.git_old
+playwright-report

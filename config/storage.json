@@ -1,0 +1,40 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-direct-sso-auth/^2.0.0/components/context.jsonld"
+  ],
+
+  "@graph": [
+    {
+      "@id": "urn:cdsa:core:SessionStore:Global",
+      "@type": "BaseSessionStore",
+      "storage": {
+        "@id": "urn:cdsa:core:SessionStorage",
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/accounts/sso-session/",
+          "source": {
+            "@id": "urn:solid-server:default:KeyValueStorage"
+          }
+        }
+      }
+    },
+    {
+      "@id": "urn:cdsa:core:Store:Global",
+      "@type": "BaseSsoStore",
+      "storage": {
+        "@id": "urn:solid-server:default:AccountStorage"
+      }
+    },
+    {
+      "@id": "urn:solid-server:default:EarlyProcessParallelInitializer",
+      "@type": "ParallelHandler",
+      "handlers": [
+        {
+          "@id": "urn:cdsa:core:Store:Global"
+        }
+      ]
+    }
+  ]
+}

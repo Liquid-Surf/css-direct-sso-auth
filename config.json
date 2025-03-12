@@ -1,0 +1,18 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-direct-sso-auth/^2.0.0/components/context.jsonld"
+  ],
+  "import": [
+    "cdsa:config/storage.json",
+    "cdsa:config/google-setup.json",
+    "cdsa:config/github-setup.json"
+  ],
+  "@graph": [
+    {
+      "comment": [
+        "A configuration file for Component.js to customize based on css:config/oidc.json."
+      ]
+    }
+  ]
+}

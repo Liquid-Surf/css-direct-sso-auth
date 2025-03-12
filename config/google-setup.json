@@ -1,0 +1,133 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-direct-sso-auth/^2.0.0/components/context.jsonld"
+  ],
+  "import": [
+    "cdsa:config/google-secret.json"
+  ],
+  "@graph": [
+
+  		{ "comment": "RESOLVER" },
+
+			{
+      "@id": "urn:cdsa:core:CallbackRoute:Google",
+      "@type": "RelativePathInteractionRoute",
+      "base": {
+        "@type": "AbsolutePathInteractionRoute",
+        "path": {
+          "@id": "urn:solid-server:default:variable:baseUrl"
+        }
+      },
+      "comment" : [
+      	"if you set 'http://example.org/callback/' in google cloud settings",
+      	"just put 'callback/' , and it will be appended to baseUrl.",
+        "careful with trailling slash ! they should match"
+      ],
+      "relativePath": "google-callback/"
+    },
+    {
+      "@id": "urn:cdsa:core:CookieName:Google",
+      "comment": "give a *unique* string for this client",
+      "valueRaw": "google-auth-cookie"
+    },
+    {
+      "@id": "urn:cdsa:core:IdentityResolver:Google",
+      "@type": "OIDCResolver",
+      "callback_route": {
+        "@id": "urn:cdsa:core:CallbackRoute:Google"
+      },
+      "client_id": {
+        "@id": "urn:cdsa:core:IdentityResolver:Google:clientId"
+      },
+      "client_secret": {
+        "@id": "urn:cdsa:core:IdentityResolver:Google:clientSecret"
+      },
+      "issuer_url": {
+        "valueRaw": "https://accounts.google.com"
+      }
+    },
+    {
+      "@id": "urn:solid-server:default:EarlyProcessParallelInitializer",
+      "@type": "ParallelHandler",
+      "handlers": [
+        {
+          "@id": "urn:cdsa:core:IdentityResolver:Google"
+        }
+      ]
+    },
+
+		{ "comment": "REDIRECT" },
+
+    {
+      "@id": "urn:cdsa:core:RedirectEndpointRouterHandler:Google",
+      "@type": "RouterHandler",
+      "baseUrl": {
+        "@id": "urn:solid-server:default:variable:baseUrl"
+      },
+      "targetExtractor": {
+        "@id": "urn:solid-server:default:TargetExtractor"
+      },
+      "allowedPathNames": [
+        "/.auth/google/login"
+      ],
+      "handler": {
+        "@id": "urn:cdsa:core:RedirectEndpointHandler:Google",
+        "@type": "RedirectEndpointHttpHandler",
+        "identityResolvers": [
+          {"@id": "urn:cdsa:core:IdentityResolver:Google"}
+        ],
+        "sessionStore":  { "@id": "urn:cdsa:core:SessionStore:Global" },
+        "cookieName": { "@id": "urn:cdsa:core:CookieName:Google"}
+      }
+    },
+    {
+      "@id": "urn:solid-server:default:BaseHttpHandler",
+      "@type": "WaterfallHandler",
+      "handlers": [
+        {
+          "@id": "urn:cdsa:core:RedirectEndpointRouterHandler:Google"
+        }
+      ]
+    },
+
+
+		{ "comment": "CALLBACK" },
+
+    {
+      "@id": "urn:cdsa:core:CallbackRouterHandler:Google",
+      "@type": "RouterHandler",
+      "baseUrl": {
+        "@id": "urn:solid-server:default:variable:baseUrl"
+      },
+      "targetExtractor": {
+        "@id": "urn:solid-server:default:TargetExtractor"
+      },
+      "allowedPathNames": [
+        "/google-callback"
+      ],
+      "handler": {
+        "@id": "urn:cdsa:core:CallbackHandler:Google",
+        "@type": "CallbackHttpHandler",
+        "ssoOIDC": { "@id": "urn:cdsa:core:IdentityResolver:Google"},
+        "sessionStore": { "@id": "urn:cdsa:core:SessionStore:Global"},
+        "ssoStore": { "@id": "urn:cdsa:core:Store:Global"},
+        "accountStore": { "@id": "urn:solid-server:default:AccountStore"},
+        "providerFactory": { "@id": "urn:solid-server:default:IdentityProviderFactory" },
+        "createPodHandler": { "@id": "urn:solid-server:default:CreatePodHandler"},
+        "webIdStore": { "@id": "urn:solid-server:default:WebIdStore"}, 
+        "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl"},
+        "cookieName": { "@id": "urn:cdsa:core:CookieName:Google"}
+      }
+    },
+    {
+      "@id": "urn:solid-server:default:BaseHttpHandler",
+      "@type": "WaterfallHandler",
+      "handlers": [
+        {
+          "@id": "urn:cdsa:core:CallbackRouterHandler:Google"
+        }
+      ]
+    }
+  ]
+}
