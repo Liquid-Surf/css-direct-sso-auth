@@ -38,3 +38,12 @@ ACCOUNT_NAME="john doe"
    - will ask you to login with a google account and store the cookie for next test
  - after that, just run `npm run test`
 
+# related work
+
+https://github.com/ksaito-hiu/css-google-auth
+
+# security 
+
+
+Please do not use in production yet until we go through a security audit. Some security consideration are already written ./SECURITY.md
+
