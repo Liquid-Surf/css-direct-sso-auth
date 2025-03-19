@@ -4,7 +4,8 @@
     "dev": "vite --port 1234",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "PORT=1234 node server.js"
+    "start": "node server.js",
+    "start:2345": "PORT=2345 node server.js"
   },
   "dependencies": {
     "@inrupt/solid-client-authn-browser": "^1.17.5",
