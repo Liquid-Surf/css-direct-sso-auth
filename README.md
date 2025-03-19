@@ -45,5 +45,9 @@ https://github.com/ksaito-hiu/css-google-auth
 # security 
 
 
-Please do not use in production yet until we go through a security audit. Some security consideration are already written ./SECURITY.md
+Please do not use in production yet until we go through a security audit. Some security consideration are already written ./SECURITY.md 
+There is WIP to fix that, see the branch `allowed_client_list`
 
+# acknowledgement
+
+Thanks to @elf-pavlik for his advice and code review
