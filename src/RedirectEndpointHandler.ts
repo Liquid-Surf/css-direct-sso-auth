@@ -14,36 +14,50 @@ import { v4 } from 'uuid'
 export class RedirectEndpointHttpHandler extends HttpHandler {
   protected readonly logger = getLoggerFor(this);
 
-  private readonly ssoOidc
-  private readonly sessionStore
-  private readonly cookieName
+  private readonly ssoOidc;
+  private readonly sessionStore;
+  private readonly cookieName;
+  private readonly allowedClient;
 
   constructor(
     identityResolvers: Array<OIDCResolver | OAuthResolver>,
     sessionStore: SessionStore,
-    cookieName: string
+    cookieName: string,
+    allowedClient: string
   ) {
     super();
-    this.ssoOidc = identityResolvers[0]
+    this.ssoOidc = identityResolvers[0];
     this.sessionStore = sessionStore;
-    this.cookieName = cookieName
+    this.cookieName = cookieName;
+    this.allowedClient = allowedClient;
   }
 
   public async handle({ request, response }: HttpHandlerInput): Promise<void> {
  
     const host = request.headers.host || 'localhost';
     const requestUrl = new URL(request.url as string, `http://${host}`);
-    const rp_client_id = requestUrl.searchParams.get('client_id') || ''
-    const rp_redirect_uri = requestUrl.searchParams.get('redirect_uri') || ''
-    const rp_state = requestUrl.searchParams.get('state') || ''
-    const rp_code_challenge = requestUrl.searchParams.get('code_challenge') || ''
-    const rp_code_challenge_method = requestUrl.searchParams.get('code_challenge_method') || ''
-    const rp_origin = request.headers.referer || ''
+    const rp_client_id = requestUrl.searchParams.get('client_id') || '';
+    
+    // Check if client is allowed
+    if (this.allowedClient !== rp_client_id) {
+      this.logger.warn(`Unauthorized client attempt: ${rp_client_id}`);
+      response.writeHead(403, {
+        'Content-Type': 'application/json',
+      });
+      response.end(JSON.stringify({
+        error: 'unauthorized_client',
+        error_description: 'This client is not authorized to use SSO authentication'
+      }));
+      return;
+    }
 
-    // const response_type = requestUrl.searchParams.get('response_type')
-    // const prompt = requestUrl.searchParams.get('prompt')
+    const rp_redirect_uri = requestUrl.searchParams.get('redirect_uri') || '';
+    const rp_state = requestUrl.searchParams.get('state') || '';
+    const rp_code_challenge = requestUrl.searchParams.get('code_challenge') || '';
+    const rp_code_challenge_method = requestUrl.searchParams.get('code_challenge_method') || '';
+    const rp_origin = request.headers.referer || '';
 
-    const cookieValue = v4()
+    const cookieValue = v4();
 
     this.sessionStore.set(cookieValue, 'rp_client_id', rp_client_id);
     this.sessionStore.set(cookieValue, 'rp_redirect_uri', rp_redirect_uri);

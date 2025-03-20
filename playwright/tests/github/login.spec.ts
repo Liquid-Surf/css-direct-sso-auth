@@ -3,9 +3,10 @@ import dotenv from 'dotenv'
 dotenv.config()
 const github_account_name = process.env.GITHUB_ACCOUNT_NAME
 const authFile = './playwright/tests/browser_state/browser_state_github_session.json';
+export const clientUrl = process.env.CLIENT_URL || 'http://localhost:1234';
 test('Google SSO E2E Test - logs in via Google and loads a file', async ({ page }) => {
   // Step 1: Visit the client application (adjust the URL as needed)
-  await page.goto('http://localhost:1234');
+  await page.goto(clientUrl);
   // await page.waitForNavigation({ timeout: 10000, url: /localhost:1234/ });
 
 
@@ -26,9 +27,9 @@ test('Google SSO E2E Test - logs in via Google and loads a file', async ({ page 
 
   // Back to the client
 
-  // 7. Wait for redirection back to your client (URL should contain "localhost:4000")
-  await page.waitForNavigation({ url: /localhost:1234/, timeout: 10000 });
-  expect(page.url()).toContain('localhost:1234');
+  // 7. Wait for redirection back to your client 
+  await page.waitForNavigation({ url: new RegExp(clientUrl), timeout: 10000 });
+  expect(page.url()).toContain(clientUrl);
 
   // 8. In the client, enter the resource URL in the #resourceInput field.
   await page.waitForSelector('#resourceInput', { timeout: 10000 });

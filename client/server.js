@@ -1,7 +1,7 @@
 import express from "express";
 
 const app = express();
-const port = process.env.PORT || 6080;
+const port = process.env.PORT || 1234;
 const CLIENT_URL = process.env.CLIENT_URL || `http://localhost:${port}/`;
 
 app.use(express.static('public'));

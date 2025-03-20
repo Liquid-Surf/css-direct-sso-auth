@@ -62,15 +62,9 @@ loginEmailPasswordButton.addEventListener("click", async () => {
       oidcIssuer: CSS_URL,
       redirectUrl: window.location.href,
       clientName: "Solid Demo App",
-      prompt: "consent", 
-      acrValues: "my acr value",
+      prompt: "consent"
     });
   } 
-  // else {
-  //   // Logout
-  //   await session.logout();
-  //   window.location.reload();
-  // }
 });
 
 
@@ -113,6 +107,7 @@ const forgeRedirectUrl = (code, state, provider_url) => {
  */
 
 const startLogin = async (login_endpoint) => {
+  const clientId = `${window.location.href}clientid`
 
   if (!session.info.isLoggedIn) {
     // Initiate login
@@ -120,6 +115,7 @@ const startLogin = async (login_endpoint) => {
       oidcIssuer: CSS_URL,
       redirectUrl: window.location.href,
       clientName: "Solid Demo App",
+      clientId,
       prompt: "consent", 
       handleRedirect: async (url) => {
         // TODO this should be fetched dynamically
