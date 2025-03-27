@@ -78,7 +78,8 @@
           {"@id": "urn:cdsa:core:IdentityResolver:Google"}
         ],
         "sessionStore":  { "@id": "urn:cdsa:core:SessionStore:Global" },
-        "cookieName": { "@id": "urn:cdsa:core:CookieName:Google"}
+        "cookieName": { "@id": "urn:cdsa:core:CookieName:Google"},
+        "allowedClient": { "@id": "urn:cdsa:core:allowedClient"}
       }
     },
     {

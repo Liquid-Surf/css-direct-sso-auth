@@ -84,7 +84,8 @@
           {"@id": "urn:cdsa:core:IdentityResolver:Github"}
         ],
         "sessionStore":  { "@id": "urn:cdsa:core:SessionStore:Global" },
-        "cookieName": { "@id": "urn:cdsa:core:CookieName:Github"}
+        "cookieName": { "@id": "urn:cdsa:core:CookieName:Github"},
+        "allowedClient": { "@id": "urn:cdsa:core:allowedClient"}
       }
     },
     {
