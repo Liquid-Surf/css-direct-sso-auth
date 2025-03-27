@@ -1,5 +1,7 @@
 ## [live demo](https://sso-client.liquid.surf)
 
+## [motivation](https://www.liquid.surf/2025/3/16/Bridging-the-User-Adoption-Gap-through-SSO-authentification)
+
 # setup
 
 First you need to create OAuth client, and copy clientId and clientSecret value to ./config/google-secret.json 
