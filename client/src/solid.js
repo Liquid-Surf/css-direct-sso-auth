@@ -5,7 +5,7 @@ console.log(" ----  PAGE IS RELOADED ---- ")
 const session = new InruptSession();
 
 // Demo configuration constant
-const CSS_URL = import.meta.env.VITE_CSS_URL || 'http://localhost:4000/';
+let CSS_URL = import.meta.env.VITE_CSS_URL || 'http://localhost:4000/';
 
 const resourceInput = document.getElementById('resourceInput');
 const cssUrlInput = document.getElementById('cssurl');
